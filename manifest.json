@@ -3,12 +3,9 @@
     "name": "Ruway - Organizador de tareas",
     "version": "1.0",
     "description": "Ruway es un gestor de tareas simple pero poderoso integrado directamente en tu navegador.",
-    "icon": {
-      "16": "images/icon-16.png"
-    },
+    
     "action": {
-      "default_popup": "popup/popup.html",
-      "default_icon": "images/icon-16.png"
+      "default_popup": "popup/popup.html"
     },
     "background": {
       "service_worker": "scripts/background.js"
