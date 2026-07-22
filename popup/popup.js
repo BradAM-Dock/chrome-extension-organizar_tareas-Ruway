@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     let listaDeTareas = [];
   
-    // 1. CARGAR TAREAS GUARDADAS EN EL ALMACENAMIENTO DE CHROME
     chrome.storage.local.get(['ruwayTareas'], (result) => {
       if (result.ruwayTareas) {
         listaDeTareas = result.ruwayTareas;
@@ -12,22 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   
-    // 2. GUARDAR TAREAS
     function guardarEnStorage() {
       chrome.storage.local.set({ ruwayTareas: listaDeTareas });
     }
   
-    // 3. AGREGAR NUEVA TAREA
     btnAgregarTarea.addEventListener('click', () => {
       const ahora = new Date();
       
-      // Fecha y hora actual formateada
       const fechaCreacion = ahora.toLocaleString('es-ES', {
         dateStyle: 'short',
         timeStyle: 'short'
       });
   
-      // Fecha por defecto para entregar: Hoy a las 23:59
       const hoyAnio = ahora.getFullYear();
       const hoyMes = String(ahora.getMonth() + 1).padStart(2, '0');
       const hoyDia = String(ahora.getDate()).padStart(2, '0');
@@ -38,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fechaCreacion: fechaCreacion,
         fechaEntrega: fechaLimiteDefault,
         descripcion: '',
-        editando: true // Inicia en modo edición
+        editando: true 
       };
   
       listaDeTareas.push(nuevaTarea);
@@ -46,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderizarTareas();
     });
   
-    // 4. CALCULAR TIEMPO RESTANTE
     function obtenerTiempoRestante(fechaEntregaStr) {
       const ahora = new Date();
       const entrega = new Date(fechaEntregaStr);
@@ -66,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return `Faltan ${dias} d, ${horasRestantes} h y ${minutosRestantes} m`;
     }
   
-    // 5. DIBUJAR Y ACTUALIZAR LA LISTA EN PANTALLA
     function renderizarTareas() {
       contenedorTareas.innerHTML = '';
   
@@ -75,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         card.className = 'card-tarea';
   
         if (tarea.editando) {
-          // --- MODO EDICIÓN ---
           card.innerHTML = `
             <div class="card-acciones">
               <button class="btn-icon btn-guardar">✔ Listo</button>
@@ -94,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
   
-          // Eventos en modo edición
           card.querySelector('.btn-guardar').addEventListener('click', () => {
             const nuevaFecha = card.querySelector('.input-fecha').value;
             const nuevaDesc = card.querySelector('.input-desc').value;
@@ -108,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
   
         } else {
-          // --- MODO VISTA FINAL (LISTO) ---
           const tiempoTexto = obtenerTiempoRestante(tarea.fechaEntrega);
   
           card.innerHTML = `
@@ -127,14 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
   
-          // Evento botón Editar
           card.querySelector('.btn-editar').addEventListener('click', () => {
             listaDeTareas[index].editando = true;
             guardarEnStorage();
             renderizarTareas();
           });
   
-          // Evento botón Completado (Elimina la tarea realizada)
           card.querySelector('.btn-completado').addEventListener('click', () => {
             listaDeTareas.splice(index, 1);
             guardarEnStorage();
@@ -142,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
   
-        // Evento eliminar en modo edición
         const btnEliminar = card.querySelector('.btn-eliminar');
         if (btnEliminar) {
           btnEliminar.addEventListener('click', () => {
